@@ -4,6 +4,12 @@ import datetime
 
 __all__ = ["Licor840"]
 
+def safe_cast(value, cast):
+    try:
+        rv = cast(value)
+    except:
+        rv = None
+    return rv
 
 class Licor840:
     COLUMNS = [
@@ -54,23 +60,26 @@ class Licor840:
 
         # merge to a dictionary
         if raw and raw.data:
-            rv = [
-                datetime.datetime.utcnow().isoformat(),
-                float(raw.data.celltemp.string),
-                float(raw.data.cellpres.string),
-                float(raw.data.co2.string),
-                float(raw.data.co2abs.string),
-                float(raw.data.h2o.string),
-                float(raw.data.h2oabs.string),
-                float(raw.data.h2odewpoint.string),
-                float(raw.data.ivolt.string),
-                float(raw.data.raw.co2.string),
-                float(raw.data.raw.co2ref.string),
-                float(raw.data.raw.h2o.string),
-                float(raw.data.raw.h2oref.string)
-            ]
+            try:
+                rv = [
+                    datetime.datetime.utcnow().isoformat(),
+                    float(raw.data.celltemp.string),
+                    float(raw.data.cellpres.string),
+                    float(raw.data.co2.string),
+                    float(raw.data.co2abs.string),
+                    float(raw.data.h2o.string),
+                    float(raw.data.h2oabs.string),
+                    float(raw.data.h2odewpoint.string),
+                    float(raw.data.ivolt.string),
+                    float(raw.data.raw.co2.string),
+                    float(raw.data.raw.co2ref.string),
+                    float(raw.data.raw.h2o.string),
+                    float(raw.data.raw.h2oref.string)
+                ]
 
-            rv = dict(zip(self.COLUMNS, rv))
+                rv = dict(zip(self.COLUMNS, rv))
+            except:
+                rv = dict()
 
             return rv
 
